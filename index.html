@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Holly's ToDo List">
+    <title>Holly's ToDo List - Active Tasks Printer</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Holly's ToDo List</h1>
+            <div id="authPanel" class="auth-panel">
+                <span id="userStatus">Not signed in</span>
+                <button id="signInBtn" class="auth-btn">Sign In</button>
+                <button id="signOutBtn" class="auth-btn hidden">Sign Out</button>
+            </div>
+            <div class="view-controls">
+                <button id="showCompletedBtn" class="view-btn">
+                    Completed Tasks
+                    <span class="task-count" id="completedCount">0</span>
+                </button>
+                <button id="showArchivedBtn" class="view-btn">
+                    Archived Tasks
+                    <span class="task-count" id="archivedCount">0</span>
+                </button>
+            </div>
+        </header>
+        
+        <div class="todo-input-container">
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="todoInput">New ToDo</label>
+                    <input type="text" id="todoInput" placeholder="What needs to be done?" maxlength="50">
+                </div>
+                <div class="input-field">
+                    <label for="categorySelect">Category</label>
+                    <select id="categorySelect">
+                        <option value="">Select Category</option>
+                        <option value="New Job Applications">New Job Applications</option>
+                        <option value="Family">Family</option>
+                        <option value="Leisure">Leisure</option>
+                        <option value="Social">Social</option>
+                        <option value="Travel">Travel</option>
+                        <option value="MarkAllen">Mark Allen</option>
+                        <option value="Gramophone">Gramophone</option>
+                        <option value="Events">Events</option>
+                        <option value="NCJ">NCJ</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <label for="prioritySelect">Priority</label>
+                    <select id="prioritySelect">
+                        <option value="">Select Priority</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="input-field">
+                    <label for="dueDateInput">Expected Completion</label>
+                    <input type="date" id="dueDateInput" class="date-picker">
+                </div>
+            </div>
+            <div class="input-group secondary-inputs">
+                <div class="input-field">
+                    <label for="resourcesInput">Resources Needed</label>
+                    <input type="text" id="resourcesInput" placeholder="What resources are required?">
+                </div>
+                <div class="input-field">
+                    <label for="peopleInput">Other People's Input Needed</label>
+                    <input type="text" id="peopleInput" placeholder="Who else needs to be involved?">
+                </div>
+            </div>
+            <button id="addTodo">Add Task</button>
+        </div>
+        
+        <div class="sort-controls">
+            <label>Sort by:</label>
+            <select id="sortSelect">
+                <option value="category">Category</option>
+                <option value="dueDate">Due Date</option>
+                <option value="priority">Priority</option>
+            </select>
+            <button id="printButton" class="print-button"> Print Active Tasks</button>
+        </div>
+
+        <div class="lists-container">
+            <div class="active-todos">
+                <h2>Active Tasks</h2>
+                <div id="todoList" class="todo-list"></div>
+            </div>
+
+            <div class="completed-todos hidden" id="completedSection">
+                <h2>Completed Tasks</h2>
+                <div id="completedList" class="todo-list"></div>
+            </div>
+
+            <div class="archived-todos hidden" id="archivedSection">
+                <h2>Archived Tasks</h2>
+                <div id="archivedList" class="todo-list"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
