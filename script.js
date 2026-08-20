@@ -223,6 +223,7 @@ function subscribeToCollection(collectionName, targetArray) {
             renderTodos();
         }, (error) => {
             console.error(`Error listening to ${collectionName}:`, error);
+            alert(`Could not load tasks from the cloud.\n\nError: ${error.message || error.code || 'Unknown error'}\n\nCheck that Firestore rules are deployed and that this domain is authorised.`);
         });
 
     unsubscribers.push(unsub);
@@ -323,7 +324,7 @@ function addTodo() {
         })
         .catch((error) => {
             console.error('Error adding todo:', error);
-            alert('Could not add task. Please try again.');
+            alert(`Could not add task.\n\nError: ${error.message || error.code || 'Unknown error'}\n\nIf this keeps happening, make sure Firestore rules are deployed in the Firebase Console.`);
         });
 }
 
