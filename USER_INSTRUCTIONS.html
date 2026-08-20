@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holly's ToDo List — User Instructions</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: #f8fafc;
+            margin: 0;
+            padding: 1.5rem;
+        }
+        .leaflet {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: #3b82f6;
+            font-size: 2rem;
+            margin-top: 0;
+            text-align: center;
+        }
+        h2 {
+            color: #2563eb;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 0.3rem;
+            margin-top: 1.8rem;
+        }
+        h3 {
+            color: #1e40af;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        p, li {
+            font-size: 0.95rem;
+        }
+        ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        li {
+            margin-bottom: 0.4rem;
+        }
+        .tip {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .step {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        .columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .leaflet { box-shadow: none; border-radius: 0; max-width: 100%; }
+            h2 { page-break-after: avoid; }
+            .columns { page-break-inside: avoid; }
+        }
+        @media (max-width: 600px) {
+            .columns { grid-template-columns: 1fr; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="leaflet">
+        <h1>Holly's ToDo List</h1>
+        <p style="text-align:center; font-size:1.05rem; color:#555; margin-top:-0.5rem;">
+            A simple task manager that works on iPhone, iPad, Mac and other devices.
+        </p>
+
+        <h2>Getting started</h2>
+        <ol>
+            <li>Open the app in your web browser using the link you have been given.</li>
+            <li>The app signs you in automatically as a guest, so you can start using it straight away.</li>
+            <li>To keep tasks the same across all your devices, make sure you use the same app link on each device.</li>
+        </ol>
+
+        <div class="tip">
+            <strong>Tip:</strong> Add the app to your Home Screen or Dock so it opens like a normal app.
+        </div>
+
+        <h2>Installing the app</h2>
+        <div class="columns">
+            <div>
+                <h3>iPhone or iPad</h3>
+                <ol>
+                    <li>Open the app in Safari.</li>
+                    <li>Tap the <strong>Share</strong> button (square with an arrow).</li>
+                    <li>Tap <strong>Add to Home Screen</strong>.</li>
+                    <li>Tap <strong>Add</strong>.</li>
+                </ol>
+            </div>
+            <div>
+                <h3>Mac</h3>
+                <p><strong>Safari</strong> (macOS Sonoma or later): open the app, then choose <strong>File → Add to Dock</strong>.</p>
+                <p><strong>Chrome or Edge</strong>: open the app, look for the install icon in the address bar, or use the browser menu to install the page as an app.</p>
+            </div>
+        </div>
+
+        <h2>Adding a task</h2>
+        <ol>
+            <li>Type the task in the <strong>New ToDo</strong> box (up to 50 characters).</li>
+            <li>Choose a <strong>Category</strong> and a <strong>Priority</strong>.</li>
+            <li>Pick an <strong>Expected Completion</strong> date if you want a reminder.</li>
+            <li>Add any <strong>Resources Needed</strong> or <strong>Other People's Input</strong>.</li>
+            <li>Tap <strong>Add Task</strong>.</li>
+        </ol>
+
+        <h2>Managing tasks</h2>
+        <ul>
+            <li><strong>Mark as Complete</strong>: tap the tick (✓) button. Completed tasks move to the Completed Tasks list.</li>
+            <li><strong>Archive</strong>: tap the folder (📁) button to move a task to Archived Tasks.</li>
+            <li><strong>Delete</strong>: archived tasks can be deleted permanently using the bin (🗑️) button.</li>
+            <li><strong>Sort</strong>: use the <strong>Sort by</strong> drop-down to sort by Category, Due Date or Priority.</li>
+            <li><strong>Print</strong>: tap <strong>Print Active Tasks</strong> to print or save as PDF.</li>
+        </ul>
+
+        <h2>Keeping tasks in sync across devices</h2>
+        <p>Tasks are saved automatically to the cloud. If you open the app on another device using the same link, your tasks will appear after a few seconds.</p>
+        <div class="tip">
+            The app needs an internet connection to sync. Changes made offline will be sent to the cloud once the connection returns.
+        </div>
+
+        <h2>Reminders</h2>
+        <p>There are two ways to get a reminder about a due task.</p>
+        <div class="columns">
+            <div>
+                <h3>Push notifications</h3>
+                <p>When you first use the app, allow notifications if asked. You will then receive a reminder at 8:00 am the day before a task is due.</p>
+            </div>
+            <div>
+                <h3>Calendar export</h3>
+                <p>Tap <strong>Export to Calendar</strong> to download a calendar file. Open it on your device to add the tasks and reminders to Apple Calendar, Google Calendar or Outlook.</p>
+            </div>
+        </div>
+
+        <h2>Troubleshooting</h2>
+        <ul>
+            <li><strong>Tasks not syncing?</strong> Check that you have an internet connection and that you are using the same app link on each device.</li>
+            <li><strong>Push reminders not appearing?</strong> Make sure notifications are allowed for the app in your device settings, and that the app is installed to your Home Screen or Dock.</li>
+            <li><strong>App looks old after an update?</strong> Close the app completely and reopen it. On iPhone/iPad this means swiping it away from the app switcher.</li>
+        </ul>
+
+        <p style="text-align:center; margin-top:2rem; color:#666; font-size:0.9rem;">
+            For technical support, contact the person who set up the app for you.
+        </p>
+    </div>
+</body>
+</html>
