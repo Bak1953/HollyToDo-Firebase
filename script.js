@@ -17,6 +17,7 @@ const archivedSection = document.getElementById('archivedSection');
 const completedCount = document.getElementById('completedCount');
 const archivedCount = document.getElementById('archivedCount');
 const printButton = document.getElementById('printButton');
+const exportCalendarBtn = document.getElementById('exportCalendarBtn');
 const userStatus = document.getElementById('userStatus');
 const signInBtn = document.getElementById('signInBtn');
 const signOutBtn = document.getElementById('signOutBtn');
@@ -355,14 +356,16 @@ function deleteTodo(id) {
 
 // Request notification permission and save FCM token
 async function registerForReminders() {
-    if (!('Notification' in window)) return;
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
 
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') return;
 
     try {
+        const swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
         const token = await messaging.getToken({
-            vapidKey: 'BLzlpJ_H4SZbvTw4ig08wNfxS1RLb2moDbSAoTMv0s-MQr8ukX_9ERXBylzvQKjXdf4sfZI-5axQLksANwL5kl0'
+            vapidKey: 'BLzlpJ_H4SZbvTw4ig08wNfxS1RLb2moDbSAoTMv0s-MQr8ukX_9ERXBylzvQKjXdf4sfZI-5axQLksANwL5kl0',
+            serviceWorkerRegistration: swRegistration
         });
         if (token && currentUserId) {
             await db.collection('users').doc(currentUserId).update({
@@ -395,6 +398,79 @@ function updateAuthUI(user) {
     }
 }
 
+// Export active todos with due dates to a calendar .ics file (all-day events with a 1-day reminder)
+function exportCalendar() {
+    if (!todos.length) {
+        alert('No active tasks to export.');
+        return;
+    }
+
+    const tasksWithDueDate = todos.filter((todo) => todo.dueDate);
+    if (!tasksWithDueDate.length) {
+        alert('No active tasks have a due date to export.');
+        return;
+    }
+
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    function escapeIcs(text) {
+        return (text || '').toString()
+            .replace(/\\/g, '\\\\')
+            .replace(/;/g, '\\;')
+            .replace(/,/g, '\\,')
+            .replace(/\n/g, '\\n');
+    }
+
+    let ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//HollyToDo//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH'
+    ];
+
+    tasksWithDueDate.forEach((todo) => {
+        const startDate = todo.dueDate.replace(/-/g, '');
+        const summary = escapeIcs(`HollyToDo: ${todo.text}`);
+        const description = escapeIcs(
+            `Category: ${todo.category || ''}\n` +
+            `Priority: ${todo.priority || ''}\n` +
+            `Resources: ${todo.resources || ''}\n` +
+            `People: ${todo.people || ''}`
+        );
+        const uidEvent = `${todo.id || Date.now()}@hollytodo`;
+
+        ics = ics.concat([
+            'BEGIN:VEVENT',
+            `UID:${uidEvent}`,
+            `DTSTAMP:${timestamp}`,
+            `DTSTART;VALUE=DATE:${startDate}`,
+            `DTEND;VALUE=DATE:${startDate}`,
+            `SUMMARY:${summary}`,
+            `DESCRIPTION:${description}`,
+            'BEGIN:VALARM',
+            'ACTION:DISPLAY',
+            'DESCRIPTION:Reminder',
+            'TRIGGER:-P1D',
+            'END:VALARM',
+            'END:VEVENT'
+        ]);
+    });
+
+    ics.push('END:VCALENDAR');
+
+    const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `hollytodo-reminders-${new Date().toISOString().split('T')[0]}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
 // Event listeners
 addTodoBtn.addEventListener('click', addTodo);
 todoInput.addEventListener('keypress', (e) => {
@@ -404,6 +480,7 @@ sortSelect.addEventListener('change', renderTodos);
 showCompletedBtn.addEventListener('click', () => toggleSection(completedSection, showCompletedBtn));
 showArchivedBtn.addEventListener('click', () => toggleSection(archivedSection, showArchivedBtn));
 printButton.addEventListener('click', () => window.print());
+exportCalendarBtn.addEventListener('click', exportCalendar);
 
 signInBtn.addEventListener('click', () => {
     auth.signInAnonymously().catch((error) => {

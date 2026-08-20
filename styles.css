@@ -604,6 +604,24 @@ h2 {
     color: white;
 }
 
+.calendar-button {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.calendar-button:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
 @media (max-width: 1024px) {
     .lists-container {
         grid-template-columns: repeat(2, 1fr);
