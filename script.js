@@ -362,7 +362,7 @@ async function registerForReminders() {
 
     try {
         const token = await messaging.getToken({
-            vapidKey: 'YOUR_VAPID_KEY_HERE'
+            vapidKey: 'BLzlpJ_H4SZbvTw4ig08wNfxS1RLb2moDbSAoTMv0s-MQr8ukX_9ERXBylzvQKjXdf4sfZI-5axQLksANwL5kl0'
         });
         if (token && currentUserId) {
             await db.collection('users').doc(currentUserId).update({
