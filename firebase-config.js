@@ -1,12 +1,11 @@
-// Replace the values below with your Firebase web app config from:
-// Firebase Console → Project settings → Your apps → Web app
+// Firebase web app config
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDCevzjzI0XbxjUVY05_Bv3AxKba-5PvqA",
+    authDomain: "family-todos-f8a24.firebaseapp.com",
+    projectId: "family-todos-f8a24",
+    storageBucket: "family-todos-f8a24.firebasestorage.app",
+    messagingSenderId: "1060482889850",
+    appId: "1:1060482889850:web:297938be60ea486f6263c3"
 };
 
 // Initialize Firebase
