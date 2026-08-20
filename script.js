@@ -354,30 +354,6 @@ function deleteTodo(id) {
         });
 }
 
-// Request notification permission and save FCM token
-async function registerForReminders() {
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
-
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') return;
-
-    try {
-        const swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-        const token = await messaging.getToken({
-            vapidKey: 'BLzlpJ_H4SZbvTw4ig08wNfxS1RLb2moDbSAoTMv0s-MQr8ukX_9ERXBylzvQKjXdf4sfZI-5axQLksANwL5kl0',
-            serviceWorkerRegistration: swRegistration
-        });
-        if (token && currentUserId) {
-            await db.collection('users').doc(currentUserId).update({
-                fcmTokens: firebase.firestore.FieldValue.arrayUnion(token)
-            });
-            console.log('FCM token saved:', token);
-        }
-    } catch (error) {
-        console.error('Error getting FCM token:', error);
-    }
-}
-
 // Update auth UI
 function updateAuthUI(user) {
     if (user) {
@@ -388,7 +364,6 @@ function updateAuthUI(user) {
         subscribeToCollection('todos', todos);
         subscribeToCollection('completedTodos', completedTodos);
         subscribeToCollection('archivedTodos', archivedTodos);
-        registerForReminders();
     } else {
         currentUserId = null;
         userStatus.textContent = 'Not signed in';
@@ -513,15 +488,4 @@ if ('serviceWorker' in navigator) {
         .catch((error) => console.error('Service Worker registration failed:', error));
 }
 
-// Handle FCM messages while app is in foreground
-if (messaging) {
-    messaging.onMessage((payload) => {
-        console.log('Message received:', payload);
-        if (Notification.permission === 'granted') {
-            new Notification(payload.notification.title, {
-                body: payload.notification.body,
-                icon: './icon-192.png'
-            });
-        }
-    });
-}
+
