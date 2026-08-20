@@ -1,4 +1,15 @@
-// DOM Elements
+// DOM Elements — login
+const loginScreen = document.getElementById('loginScreen');
+const appMain = document.getElementById('appMain');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const loginError = document.getElementById('loginError');
+const userEmailSpan = document.getElementById('userEmail');
+const signOutBtn = document.getElementById('signOutBtn');
+
+// DOM Elements — app
 const todoInput = document.getElementById('todoInput');
 const categorySelect = document.getElementById('categorySelect');
 const prioritySelect = document.getElementById('prioritySelect');
@@ -29,9 +40,6 @@ let isAuthReady = false;
 
 // Set min date for the date picker to today
 dueDateInput.min = new Date().toISOString().split('T')[0];
-
-// Disable add button until sign-in completes
-addTodoBtn.disabled = true;
 
 // Update task counts
 const updateTaskCounts = () => {
@@ -357,20 +365,48 @@ function deleteTodo(id) {
         });
 }
 
-// Handle auth state changes
+// Handle auth state changes — show login or app
 function updateAuthUI(user) {
     if (user) {
         currentUserId = user.uid;
         isAuthReady = true;
-        addTodoBtn.disabled = false;
+        loginScreen.classList.add('hidden');
+        appMain.classList.remove('hidden');
+        userEmailSpan.textContent = user.email || '';
         subscribeToCollection('todos', todos);
         subscribeToCollection('completedTodos', completedTodos);
         subscribeToCollection('archivedTodos', archivedTodos);
     } else {
         currentUserId = null;
         isAuthReady = false;
-        addTodoBtn.disabled = true;
+        loginScreen.classList.remove('hidden');
+        appMain.classList.add('hidden');
         clearSubscriptions();
+    }
+}
+
+// Show login error
+function showLoginError(message) {
+    loginError.textContent = message;
+    loginError.classList.remove('hidden');
+}
+
+function clearLoginError() {
+    loginError.textContent = '';
+    loginError.classList.add('hidden');
+}
+
+// Friendly error messages
+function friendlyAuthError(error) {
+    switch (error.code) {
+        case 'auth/invalid-email': return 'Please enter a valid email address.';
+        case 'auth/user-not-found': return 'No account found with that email. Click "Create Account" to register.';
+        case 'auth/wrong-password': return 'Incorrect password. Please try again.';
+        case 'auth/invalid-credential': return 'Incorrect email or password. Please try again.';
+        case 'auth/email-already-in-use': return 'An account with this email already exists. Click "Sign In" instead.';
+        case 'auth/weak-password': return 'Password must be at least 6 characters.';
+        case 'auth/too-many-requests': return 'Too many attempts. Please wait a moment and try again.';
+        default: return error.message || 'An error occurred. Please try again.';
     }
 }
 
@@ -458,17 +494,67 @@ showArchivedBtn.addEventListener('click', () => toggleSection(archivedSection, s
 printButton.addEventListener('click', () => window.print());
 exportCalendarBtn.addEventListener('click', exportCalendar);
 
-// Auth state listener — automatically signs in as a guest if needed
+// Login form listeners
+loginBtn.addEventListener('click', () => {
+    clearLoginError();
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if (!email || !password) {
+        showLoginError('Please enter both email and password.');
+        return;
+    }
+
+    loginBtn.disabled = true;
+    registerBtn.disabled = true;
+
+    auth.signInWithEmailAndPassword(email, password)
+        .catch((error) => {
+            console.error('Sign in error:', error);
+            showLoginError(friendlyAuthError(error));
+            loginBtn.disabled = false;
+            registerBtn.disabled = false;
+        });
+});
+
+registerBtn.addEventListener('click', () => {
+    clearLoginError();
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if (!email || !password) {
+        showLoginError('Please enter both email and password.');
+        return;
+    }
+
+    loginBtn.disabled = true;
+    registerBtn.disabled = true;
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .catch((error) => {
+            console.error('Register error:', error);
+            showLoginError(friendlyAuthError(error));
+            loginBtn.disabled = false;
+            registerBtn.disabled = false;
+        });
+});
+
+loginPassword.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loginBtn.click();
+});
+
+signOutBtn.addEventListener('click', () => {
+    auth.signOut().catch((error) => {
+        console.error('Sign out error:', error);
+    });
+});
+
+// Auth state listener
 auth.onAuthStateChanged((user) => {
     console.log('Auth state changed:', user ? `signed in as ${user.uid}` : 'not signed in');
     updateAuthUI(user);
-
-    if (!user) {
-        auth.signInAnonymously().catch((error) => {
-            console.error('Auto sign in error:', error);
-            alert('Sign-in failed. Tasks cannot be saved. Please refresh and try again.');
-        });
-    }
+    loginBtn.disabled = false;
+    registerBtn.disabled = false;
 });
 
 // Register service worker for offline PWA support
