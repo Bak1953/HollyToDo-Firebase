@@ -58,32 +58,6 @@ header {
     margin-bottom: 2rem;
 }
 
-.auth-panel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    color: var(--text-dark);
-}
-
-.auth-btn {
-    padding: 0.4rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background-color: var(--primary-color);
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.auth-btn:hover {
-    background-color: #2563eb;
-}
-
 .view-controls {
     display: flex;
     justify-content: center;
@@ -240,6 +214,13 @@ button#addTodo:hover {
 button#addTodo:active {
     transform: translateY(1px);
     box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+button#addTodo:disabled {
+    background: linear-gradient(135deg, #93c5fd 0%, #7fb3d5 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .lists-container {

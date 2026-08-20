@@ -18,9 +18,6 @@ const completedCount = document.getElementById('completedCount');
 const archivedCount = document.getElementById('archivedCount');
 const printButton = document.getElementById('printButton');
 const exportCalendarBtn = document.getElementById('exportCalendarBtn');
-const userStatus = document.getElementById('userStatus');
-const signInBtn = document.getElementById('signInBtn');
-const signOutBtn = document.getElementById('signOutBtn');
 
 // In-memory arrays (synced from Firestore)
 let todos = [];
@@ -28,9 +25,13 @@ let completedTodos = [];
 let archivedTodos = [];
 let currentUserId = null;
 let unsubscribers = [];
+let isAuthReady = false;
 
 // Set min date for the date picker to today
 dueDateInput.min = new Date().toISOString().split('T')[0];
+
+// Disable add button until sign-in completes
+addTodoBtn.disabled = true;
 
 // Update task counts
 const updateTaskCounts = () => {
@@ -291,11 +292,12 @@ function addTodo() {
         return;
     }
 
-    const userRef = getUserRef();
-    if (!userRef) {
-        alert('Please sign in first');
+    if (!isAuthReady || !currentUserId) {
+        alert('Still signing in. Please wait a moment and try again.');
         return;
     }
+
+    const userRef = getUserRef();
 
     const newTodo = {
         text: todoText,
@@ -354,21 +356,19 @@ function deleteTodo(id) {
         });
 }
 
-// Update auth UI
+// Handle auth state changes
 function updateAuthUI(user) {
     if (user) {
         currentUserId = user.uid;
-        userStatus.textContent = `Signed in as ${user.isAnonymous ? 'Guest' : (user.email || 'User')}`;
-        signInBtn.classList.add('hidden');
-        signOutBtn.classList.remove('hidden');
+        isAuthReady = true;
+        addTodoBtn.disabled = false;
         subscribeToCollection('todos', todos);
         subscribeToCollection('completedTodos', completedTodos);
         subscribeToCollection('archivedTodos', archivedTodos);
     } else {
         currentUserId = null;
-        userStatus.textContent = 'Not signed in';
-        signInBtn.classList.remove('hidden');
-        signOutBtn.classList.add('hidden');
+        isAuthReady = false;
+        addTodoBtn.disabled = true;
         clearSubscriptions();
     }
 }
@@ -457,26 +457,15 @@ showArchivedBtn.addEventListener('click', () => toggleSection(archivedSection, s
 printButton.addEventListener('click', () => window.print());
 exportCalendarBtn.addEventListener('click', exportCalendar);
 
-signInBtn.addEventListener('click', () => {
-    auth.signInAnonymously().catch((error) => {
-        console.error('Sign in error:', error);
-        alert('Could not sign in. Please try again.');
-    });
-});
-
-signOutBtn.addEventListener('click', () => {
-    auth.signOut().catch((error) => {
-        console.error('Sign out error:', error);
-    });
-});
-
-// Auth state listener
+// Auth state listener — automatically signs in as a guest if needed
 auth.onAuthStateChanged((user) => {
+    console.log('Auth state changed:', user ? `signed in as ${user.uid}` : 'not signed in');
     updateAuthUI(user);
+
     if (!user) {
-        // Auto sign in as guest for first-time users
         auth.signInAnonymously().catch((error) => {
             console.error('Auto sign in error:', error);
+            alert('Sign-in failed. Tasks cannot be saved. Please refresh and try again.');
         });
     }
 });

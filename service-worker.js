@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'hollytodo-firebase-v1';
+const CACHE_NAME = 'hollytodo-firebase-v2';
 const ASSETS = [
   './',
   './index.html',
